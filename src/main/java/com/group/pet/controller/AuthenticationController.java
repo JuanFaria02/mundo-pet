@@ -1,10 +1,7 @@
 package com.group.pet.controller;
 
 import com.group.pet.domain.User;
-import com.group.pet.domain.dtos.AuthenticationDTO;
-import com.group.pet.domain.dtos.LoginResponseDTO;
-import com.group.pet.domain.dtos.RegisterDTO;
-import com.group.pet.domain.dtos.UserDTO;
+import com.group.pet.domain.dtos.*;
 import com.group.pet.infra.security.TokenService;
 import com.group.pet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +10,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-import static com.group.pet.utils.Constants.API_PATH;
-import static com.group.pet.utils.Constants.LOGIN_PATH;
+import static com.group.pet.utils.Constants.*;
 
 @RestController
 @RequestMapping
@@ -39,9 +32,15 @@ public class AuthenticationController {
         UsernamePasswordAuthenticationToken emailPassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = authenticationManager.authenticate(emailPassword);
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+        return ResponseEntity.ok(buildLoginResponse((User) auth.getPrincipal()));
+    }
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+    @PostMapping(REFRESH_TOKEN_PATH)
+    public ResponseEntity<LoginResponseDTO> authRefreshToken(@RequestHeader("Authorization") String refreshToken) {
+        String email = tokenService.validateToken(refreshToken);
+
+        User user = userService.findByEmail(email);
+        return ResponseEntity.ok(buildLoginResponse(user));
     }
 
     @PostMapping(API_PATH + "/usuario/criar")
@@ -56,6 +55,14 @@ public class AuthenticationController {
         final URI uri = ServletUriComponentsBuilder.fromUriString("/api/usuario/{id}")
                 .buildAndExpand(newUser.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new UserDTO(newUser));
+        return ResponseEntity.created(uri).build();
+    }
+
+    private LoginResponseDTO buildLoginResponse(User user) {
+        String accessToken = tokenService.generateAccessToken(user);
+        String refreshToken = tokenService.generateRefreshToken(user);
+
+        return new LoginResponseDTO(accessToken, TOKEN_EXPIRATION_DATE_TIME,
+                refreshToken, REFRESH_TOKEN_EXPIRATION_DATE_TIME);
     }
 }
