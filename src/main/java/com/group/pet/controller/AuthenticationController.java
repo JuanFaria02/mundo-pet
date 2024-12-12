@@ -36,8 +36,8 @@ public class AuthenticationController {
     }
 
     @PostMapping(REFRESH_TOKEN_PATH)
-    public ResponseEntity<LoginResponseDTO> authRefreshToken(@RequestHeader("Authorization") String refreshToken) {
-        String email = tokenService.validateToken(refreshToken);
+    public ResponseEntity<LoginResponseDTO> authRefreshToken(@RequestBody RefreshTokenDTO refreshTokenDTO) {
+        String email = tokenService.validateToken(refreshTokenDTO.refreshToken());
 
         User user = userService.findByEmail(email);
         return ResponseEntity.ok(buildLoginResponse(user));
