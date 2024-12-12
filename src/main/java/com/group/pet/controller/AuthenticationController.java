@@ -36,8 +36,8 @@ public class AuthenticationController {
     }
 
     @PostMapping(REFRESH_TOKEN_PATH)
-    public ResponseEntity<LoginResponseDTO> authRefreshToken(@RequestBody RefreshTokenDTO refreshBody) {
-        String email = tokenService.validateToken(refreshBody.refreshToken());
+    public ResponseEntity<LoginResponseDTO> authRefreshToken(@RequestHeader("Authorization") String refreshToken) {
+        String email = tokenService.validateToken(refreshToken);
 
         User user = userService.findByEmail(email);
         return ResponseEntity.ok(buildLoginResponse(user));
@@ -55,7 +55,7 @@ public class AuthenticationController {
         final URI uri = ServletUriComponentsBuilder.fromUriString("/api/usuario/{id}")
                 .buildAndExpand(newUser.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new UserDTO(newUser));
+        return ResponseEntity.created(uri).build();
     }
 
     private LoginResponseDTO buildLoginResponse(User user) {
