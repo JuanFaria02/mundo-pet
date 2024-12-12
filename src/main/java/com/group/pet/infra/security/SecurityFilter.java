@@ -1,6 +1,6 @@
 package com.group.pet.infra.security;
 
-import com.group.pet.repository.UserRepository;
+import com.group.pet.service.AuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,14 +19,14 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private UserRepository userRepository;
+    private AuthorizationService authorizationService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
         if(token != null){
             var email = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByEmail(email);
+            UserDetails user = authorizationService.loadUserByUsername(email);
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
