@@ -28,4 +28,32 @@ public class UserDTO {
 
     public UserDTO() {
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public Collection<? extends GrantedAuthority> getRole() {
+        return role;
+    }
+
+    public UserType getTipo() {
+        return tipo;
+    }
 }

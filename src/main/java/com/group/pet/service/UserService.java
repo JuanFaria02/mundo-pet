@@ -1,11 +1,18 @@
 package com.group.pet.service;
 
 import com.group.pet.domain.User;
+import com.group.pet.domain.dtos.UserDTO;
 import com.group.pet.repository.UserRepository;
 import com.group.pet.service.exceptions.DatabaseException;
 import com.group.pet.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -25,5 +32,47 @@ public class UserService {
             throw new DatabaseException("Esse usuário já está cadastrado");
         }
         return userRepository.save(user);
+    }
+
+    public List<UserDTO> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public UserDTO findById(Long id) {
+        Optional<User> obj = userRepository.findById(id);
+
+        final User user = obj.orElseThrow(()-> new ResourceNotFoundException(id));
+        return new UserDTO(user);
+    }
+
+    public void delete(Long id) {
+        try {
+            userRepository.deleteById(id);
+        }
+        catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    public UserDTO update(UserDTO obj) {
+        if (obj.getId() == null) {
+            throw new DatabaseException("id is required");
+        }
+
+        try {
+            final Optional<User> objUser = userRepository.findById(obj.getId());
+
+            final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(obj.getId()));
+            user.copyDto(obj);
+            return new UserDTO(userRepository.save(user));
+        } catch (RuntimeException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
 }
