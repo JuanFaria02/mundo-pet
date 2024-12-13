@@ -1,12 +1,15 @@
 package com.group.pet.domain;
 
+import com.group.pet.domain.dtos.UserDTO;
 import com.group.pet.domain.enums.UserType;
 import jakarta.persistence.*;
+import jdk.jfr.Timestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +38,10 @@ public class User implements UserDetails, Serializable {
 
     @Column(nullable = false)
     private boolean ativo;
+
+    @Column(nullable = false, name = "data_criacao")
+    @Timestamp
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
 
     @Override
@@ -88,6 +95,14 @@ public class User implements UserDetails, Serializable {
         this.ativo = ativo;
     }
 
+    public void copyDto(UserDTO userDto) {
+        this.id = userDto.getId();
+        this.email = userDto.getEmail();
+        this.nome = userDto.getNome();
+        this.telefone = userDto.getTelefone();
+        this.ativo = userDto.isAtivo();
+    }
+
     public Long getId() {
         return id;
     }
@@ -114,5 +129,9 @@ public class User implements UserDetails, Serializable {
 
     public boolean isAtivo() {
         return ativo;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
     }
 }

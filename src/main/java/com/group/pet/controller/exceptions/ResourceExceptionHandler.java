@@ -2,8 +2,8 @@ package com.group.pet.controller.exceptions;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.group.pet.service.exceptions.DatabaseException;
+import com.group.pet.service.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
