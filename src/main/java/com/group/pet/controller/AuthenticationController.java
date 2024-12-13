@@ -43,7 +43,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(buildLoginResponse(user));
     }
 
-    @PostMapping(API_PATH + "/usuario/criar")
+    @PostMapping(API_PATH + "/user/criar")
     public ResponseEntity<UserDTO> register(@RequestBody @Validated RegisterDTO data){
         if (userService.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
