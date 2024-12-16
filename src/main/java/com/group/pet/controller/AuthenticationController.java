@@ -47,12 +47,12 @@ public class AuthenticationController {
     public ResponseEntity<UserDTO> register(@RequestBody @Validated RegisterDTO data){
         if (userService.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-        User newUser = new User(null, data.nome(), encryptedPassword, data.email(), data.telefone(), data.tipo(), true);
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+        User newUser = new User(null, data.name(), encryptedPassword, data.email(), data.phone(), data.type(), true, data.documentNumber());
 
         userService.insert(newUser);
 
-        final URI uri = ServletUriComponentsBuilder.fromUriString("/api/usuario/{id}")
+        final URI uri = ServletUriComponentsBuilder.fromUriString("/api/user/{id}")
                 .buildAndExpand(newUser.getId()).toUri();
 
         return ResponseEntity.created(uri).build();

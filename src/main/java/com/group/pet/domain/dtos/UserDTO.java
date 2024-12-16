@@ -1,6 +1,5 @@
 package com.group.pet.domain.dtos;
 
-
 import com.group.pet.domain.User;
 import com.group.pet.domain.enums.UserType;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,19 +8,21 @@ import java.util.Collection;
 
 public class UserDTO {
     private Long id;
-    private String nome;
+    private String name;
     private String email;
-    private String telefone;
-    private UserType tipo;
+    private String phone;
+    private UserType type;
+    private String documentNumber;
     private Collection<? extends GrantedAuthority> role;
 
     public UserDTO(User user) {
         this.id = user.getId();
-        this.nome = user.getNome();
+        this.name = user.getNome();
         this.email = user.getEmail();
-        this.telefone = user.getTelefone();
-        this.tipo = user.getTipo();
+        this.phone = user.getTelefone();
+        this.type = user.getTipo();
         this.role = user.getAuthorities();
+        this.documentNumber = user.getDocumentNumber();
     }
 
     public UserDTO() {
@@ -32,7 +33,7 @@ public class UserDTO {
     }
 
     public String getNome() {
-        return nome;
+        return name;
     }
 
     public String getEmail() {
@@ -40,7 +41,7 @@ public class UserDTO {
     }
 
     public String getTelefone() {
-        return telefone;
+        return phone;
     }
 
     public Collection<? extends GrantedAuthority> getRole() {
@@ -48,6 +49,10 @@ public class UserDTO {
     }
 
     public UserType getTipo() {
-        return tipo;
+        return type;
+    }
+
+    public String getDocumentNumber() {
+        return documentNumber;
     }
 }

@@ -43,6 +43,9 @@ public class User implements UserDetails, Serializable {
     @Timestamp
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
+    @Column(name = "document_number")
+    private String documentNumber;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -85,7 +88,7 @@ public class User implements UserDetails, Serializable {
 
     public User() {}
 
-    public User(Long id, String nome, String senha, String email, String telefone, UserType tipo, boolean ativo) {
+    public User(Long id, String nome, String senha, String email, String telefone, UserType tipo, boolean ativo, String documentNumber) {
         this.id = id;
         this.nome = nome;
         this.senha = senha;
@@ -93,6 +96,7 @@ public class User implements UserDetails, Serializable {
         this.telefone = telefone;
         this.tipo = tipo;
         this.ativo = ativo;
+        this.documentNumber = documentNumber;
     }
 
     public void copyDto(UserDTO userDto) {
@@ -132,5 +136,9 @@ public class User implements UserDetails, Serializable {
 
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
+    }
+
+    public String getDocumentNumber() {
+        return documentNumber;
     }
 }
