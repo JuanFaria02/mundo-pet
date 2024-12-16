@@ -141,4 +141,8 @@ public class User implements UserDetails, Serializable {
     public String getDocumentNumber() {
         return documentNumber;
     }
+
+    public void changeActive() {
+        ativo = !ativo;
+    }
 }

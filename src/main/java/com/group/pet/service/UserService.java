@@ -48,9 +48,13 @@ public class UserService {
         return new UserDTO(user);
     }
 
-    public void delete(Long id) {
+    public void inativate(Long id) {
         try {
-            userRepository.deleteById(id);
+            final Optional<User> objUser = userRepository.findById(id);
+
+            final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(id));
+            user.changeActive();
+            userRepository.save(user);
         }
         catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException(id);
