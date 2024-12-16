@@ -2,7 +2,8 @@ package com.group.pet.domain.enums;
 
 public enum UserType {
     ATENDENTE("atendente"),
-    ADMIN("admin");
+    ADMIN("admin"),
+    VETERINARIO("veterinario");
 
     private String role;
 

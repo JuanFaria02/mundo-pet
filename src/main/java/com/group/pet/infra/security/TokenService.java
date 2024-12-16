@@ -33,6 +33,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
+                    .withSubject(user.getTipo().name())
                     .withExpiresAt(expirationDate)
                     .sign(algorithm);
         } catch (JWTCreationException exception) {

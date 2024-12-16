@@ -14,9 +14,9 @@ public class Constants {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
-    public static final Instant TOKEN_EXPIRATION_DATE_INSTANT = LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    public static final Instant TOKEN_EXPIRATION_DATE_INSTANT = LocalDateTime.now().plusMinutes(5).toInstant(ZoneOffset.of("-03:00"));
 
-    public static final Instant REFRESH_TOKEN_EXPIRATION_DATE_INSTANT = LocalDateTime.now().plusHours(24).toInstant(ZoneOffset.of("-03:00"));
+    public static final Instant REFRESH_TOKEN_EXPIRATION_DATE_INSTANT = LocalDateTime.now().plusDays(10).toInstant(ZoneOffset.of("-03:00"));
 
     public static final String TOKEN_EXPIRATION_DATE_TIME = LocalDateTime.ofInstant(TOKEN_EXPIRATION_DATE_INSTANT, ZoneOffset.UTC).format(formatter);
 

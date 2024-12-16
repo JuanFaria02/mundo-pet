@@ -13,7 +13,6 @@ public class UserDTO {
     private String email;
     private String telefone;
     private UserType tipo;
-    private boolean ativo;
     private Collection<? extends GrantedAuthority> role;
 
     public UserDTO(User user) {
@@ -21,7 +20,6 @@ public class UserDTO {
         this.nome = user.getNome();
         this.email = user.getEmail();
         this.telefone = user.getTelefone();
-        this.ativo = user.isAtivo();
         this.tipo = user.getTipo();
         this.role = user.getAuthorities();
     }
@@ -43,10 +41,6 @@ public class UserDTO {
 
     public String getTelefone() {
         return telefone;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
     }
 
     public Collection<? extends GrantedAuthority> getRole() {

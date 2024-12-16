@@ -37,7 +37,7 @@ public class User implements UserDetails, Serializable {
     private UserType tipo;
 
     @Column(nullable = false)
-    private boolean ativo;
+    private boolean ativo = true;
 
     @Column(nullable = false, name = "data_criacao")
     @Timestamp
@@ -100,7 +100,6 @@ public class User implements UserDetails, Serializable {
         this.email = userDto.getEmail();
         this.nome = userDto.getNome();
         this.telefone = userDto.getTelefone();
-        this.ativo = userDto.isAtivo();
     }
 
     public Long getId() {

@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.group.pet.utils.Constants.API_PATH;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping(API_PATH)
 public class UserController {
     @Autowired
     private UserService userService;
@@ -37,6 +39,6 @@ public class UserController {
     @PutMapping("/user/{id}")
     public ResponseEntity<UserDTO> update(@RequestBody UserDTO obj) {
         obj = userService.update(obj);
-        return ResponseEntity.ok().body(obj);
+        return ResponseEntity.noContent().build();
     }
 }
