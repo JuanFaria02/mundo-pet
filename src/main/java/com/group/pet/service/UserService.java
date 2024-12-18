@@ -48,7 +48,7 @@ public class UserService {
         return new UserDTO(user);
     }
 
-    public void inativate(Long id) {
+    public void inactivate(Long id) {
         try {
             final Optional<User> objUser = userRepository.findById(id);
 

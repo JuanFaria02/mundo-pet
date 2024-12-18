@@ -31,8 +31,8 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<Void> inativate(@PathVariable Long id) {
-        userService.inativate(id);
+    public ResponseEntity<Void> inactivate(@PathVariable Long id) {
+        userService.inactivate(id);
         return ResponseEntity.noContent().build();
     }
 
