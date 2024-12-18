@@ -6,12 +6,14 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.group.pet.domain.User;
+import com.group.pet.infra.security.expection.TokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-import static com.group.pet.utils.Constants.*;
+import static com.group.pet.utils.Constants.REFRESH_TOKEN_EXPIRATION_DATE_INSTANT;
+import static com.group.pet.utils.Constants.TOKEN_EXPIRATION_DATE_INSTANT;
 
 
 @Service
@@ -51,7 +53,7 @@ public class TokenService {
                     .getClaim("email")
                     .asString();
         } catch (TokenExpiredException exception) {
-            throw new TokenExpiredException("Token has expired", exception.getExpiredOn());
+            throw new TokenException("TOKEN EXPIRED");
         }
         catch (JWTVerificationException exception) {
             return "";
