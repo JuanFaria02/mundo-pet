@@ -1,6 +1,5 @@
 package com.group.pet.controller.exceptions;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.group.pet.service.exceptions.DatabaseException;
 import com.group.pet.service.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,20 +25,6 @@ public class ResourceExceptionHandler {
     public ResponseEntity<StandardError> databaseException(DatabaseException e, HttpServletRequest request) {
         String error = "Database exception occurred";
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError err = new StandardError(
-                Instant.now(),
-                status.value(),
-                error,
-                e.getMessage(),
-                request.getRequestURI()
-        );
-        return ResponseEntity.status(status).body(err);
-    }
-
-    @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<StandardError> tokenExpiredException(DatabaseException e, HttpServletRequest request) {
-        String error = "TOKEN EXPIRED";
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
         StandardError err = new StandardError(
                 Instant.now(),
                 status.value(),
