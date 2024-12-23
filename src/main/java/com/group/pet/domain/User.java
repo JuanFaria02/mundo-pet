@@ -100,7 +100,6 @@ public class User implements UserDetails, Serializable {
     }
 
     public void copyDto(UserDTO userDto) {
-        this.id = userDto.getId();
         this.email = userDto.getEmail();
         this.nome = userDto.getName();
         this.telefone = userDto.getPhone();
