@@ -54,7 +54,7 @@ public class UserService {
 
             final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(id));
 
-            if (user.getEmail().equals("admin")) {
+            if (user.getEmail().equals("admin@gmail.com")) {
                 throw new DataIntegrityViolationException("Não é possível deletar o admin");
             }
             user.changeActive();

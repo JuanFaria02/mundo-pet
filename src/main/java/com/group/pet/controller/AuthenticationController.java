@@ -65,7 +65,7 @@ public class AuthenticationController {
         String accessToken = tokenService.generateAccessToken(user);
         String refreshToken = tokenService.generateRefreshToken(user);
 
-        return new LoginResponseDTO(accessToken, TOKEN_EXPIRATION_DATE_TIME,
-                refreshToken, REFRESH_TOKEN_EXPIRATION_DATE_TIME);
+        return new LoginResponseDTO(accessToken,
+                refreshToken);
     }
 }

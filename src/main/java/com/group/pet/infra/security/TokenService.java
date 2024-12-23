@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-
-import static com.group.pet.utils.Constants.REFRESH_TOKEN_EXPIRATION_DATE_INSTANT;
-import static com.group.pet.utils.Constants.TOKEN_EXPIRATION_DATE_INSTANT;
+import java.time.temporal.ChronoUnit;
 
 
 @Service
@@ -22,11 +20,13 @@ public class TokenService {
     private String secret;
 
     public String generateAccessToken(User user) {
-        return generateToken(user, TOKEN_EXPIRATION_DATE_INSTANT);
+        Instant expirationDate = Instant.now().plus(5, ChronoUnit.MINUTES);
+        return generateToken(user, expirationDate);
     }
 
     public String generateRefreshToken(User user) {
-        return generateToken(user, REFRESH_TOKEN_EXPIRATION_DATE_INSTANT);
+        Instant expirationDate = Instant.now().plus(10, ChronoUnit.DAYS);
+        return generateToken(user, expirationDate);
     }
 
     private String generateToken(User user, Instant expirationDate) {
@@ -34,7 +34,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("auth-api")
-                    .withClaim("email", user.getEmail())
+                    .withSubject(user.getEmail())
                     .withClaim("type", user.getTipo().name())
                     .withExpiresAt(expirationDate)
                     .sign(algorithm);
@@ -50,8 +50,7 @@ public class TokenService {
                     .withIssuer("auth-api")
                     .build()
                     .verify(token)
-                    .getClaim("email")
-                    .asString();
+                    .getSubject();
         } catch (TokenExpiredException exception) {
             throw new TokenException("TOKEN EXPIRED");
         }
