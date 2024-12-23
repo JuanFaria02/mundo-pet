@@ -101,20 +101,22 @@ public class ClientService {
     }
 
     private void updatePets(List<Pet> pets, List<PetDTO> newPets, Client client) {
+        final List<String> microchips = pets.stream().map(Pet::getMicrochip).toList();
+
         final List<PetDTO> petsToUpdate = newPets.stream()
-                .filter(petDTO -> petDTO.id() != null)
+                .filter(petDTO -> microchips.contains(petDTO.microchip()))
                 .toList();
 
         final List<PetDTO> petsToSave = newPets.stream()
-                .filter(petDTO -> petDTO.id() == null)
+                .filter(petDTO -> !microchips.contains(petDTO.microchip()))
                 .toList();
 
         final List<Pet> petsToInactivate = pets.stream()
-                .filter(pet -> newPets.stream().noneMatch(newPet -> newPet.id() != null && newPet.id().equals(pet.getId())))
+                .filter(pet -> newPets.stream().noneMatch(newPet -> newPet.microchip().equals(pet.getMicrochip())))
                 .toList();
 
         petsToUpdate.forEach(petDTO -> pets.stream()
-                .filter(pet -> pet.getId().equals(petDTO.id()))
+                .filter(pet -> pet.getMicrochip().equals(petDTO.microchip()))
                 .findFirst()
                 .ifPresent(petWithSameId -> petWithSameId.copyDto(petDTO)));
 

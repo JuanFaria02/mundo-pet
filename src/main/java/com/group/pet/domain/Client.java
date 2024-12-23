@@ -48,7 +48,6 @@ public class Client {
     }
 
     public void copyDto(ClientDTO clientDTO) {
-        this.id = clientDTO.getId();
         this.phone = clientDTO.getPhone();
         this.name = clientDTO.getName();
         this.documentNumber = clientDTO.getDocumentNumber();
