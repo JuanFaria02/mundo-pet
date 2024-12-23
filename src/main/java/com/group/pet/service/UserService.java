@@ -53,6 +53,10 @@ public class UserService {
             final Optional<User> objUser = userRepository.findById(id);
 
             final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(id));
+
+            if (user.getEmail().equals("admin")) {
+                throw new DataIntegrityViolationException("Não é possível deletar o admin");
+            }
             user.changeActive();
             userRepository.save(user);
         }

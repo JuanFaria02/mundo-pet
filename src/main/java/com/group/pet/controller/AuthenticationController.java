@@ -4,6 +4,7 @@ import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.*;
 import com.group.pet.infra.security.TokenService;
 import com.group.pet.service.UserService;
+import com.group.pet.service.exceptions.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,7 +46,9 @@ public class AuthenticationController {
 
     @PostMapping(API_PATH + "/user/register")
     public ResponseEntity<UserDTO> register(@RequestBody @Validated RegisterDTO data){
-        if (userService.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
+        if (userService.findByEmail(data.email()) != null) {
+            throw new DatabaseException("email ja cadastrado!");
+        }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(null, data.name(), encryptedPassword, data.email(), data.phone(), data.type(), true, data.documentNumber());

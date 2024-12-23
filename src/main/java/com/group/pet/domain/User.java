@@ -43,7 +43,7 @@ public class User implements UserDetails, Serializable {
     @Timestamp
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
-    @Column(name = "document_number")
+    @Column(name = "document_number", unique = true)
     private String documentNumber;
 
 
@@ -102,8 +102,9 @@ public class User implements UserDetails, Serializable {
     public void copyDto(UserDTO userDto) {
         this.id = userDto.getId();
         this.email = userDto.getEmail();
-        this.nome = userDto.getNome();
-        this.telefone = userDto.getTelefone();
+        this.nome = userDto.getName();
+        this.telefone = userDto.getPhone();
+        this.documentNumber = userDto.getDocumentNumber();
     }
 
     public Long getId() {

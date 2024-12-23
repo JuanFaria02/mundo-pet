@@ -23,7 +23,7 @@ public class Client {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false, name = "document_number")
+    @Column(nullable = false, name = "document_number", unique = true)
     private String documentNumber;
 
     @Column(nullable = false)
