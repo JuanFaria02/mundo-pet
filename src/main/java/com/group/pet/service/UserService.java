@@ -68,13 +68,9 @@ public class UserService {
         }
     }
 
-    public UserDTO update(UserDTO obj) {
-        if (obj.getId() == null) {
-            throw new DatabaseException("id is required");
-        }
-
+    public UserDTO update(UserDTO obj, Long id) {
         try {
-            final Optional<User> objUser = userRepository.findById(obj.getId());
+            final Optional<User> objUser = userRepository.findById(id);
 
             final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(obj.getId()));
             user.copyDto(obj);
