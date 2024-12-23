@@ -28,6 +28,11 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         if(token != null){
             try {
+                if (request.getServletPath().equals("/refreshToken")) {
+                    tokenService.isTokenValid(token);
+                    filterChain.doFilter(request, response);
+                    return;
+                }
                 var email = tokenService.validateToken(token);
                 UserDetails user = authorizationService.loadUserByUsername(email);
 
@@ -37,6 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"" + e.getMessage() + "\"}");
+                return;
             }
         }
         filterChain.doFilter(request, response);

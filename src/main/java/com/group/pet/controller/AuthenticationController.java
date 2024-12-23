@@ -6,6 +6,7 @@ import com.group.pet.infra.security.TokenService;
 import com.group.pet.service.UserService;
 import com.group.pet.service.exceptions.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,11 +38,16 @@ public class AuthenticationController {
     }
 
     @PostMapping(REFRESH_TOKEN_PATH)
-    public ResponseEntity<LoginResponseDTO> authRefreshToken(@RequestBody RefreshTokenDTO refreshTokenDTO) {
-        String email = tokenService.validateToken(refreshTokenDTO.refreshToken());
+    public ResponseEntity<?> authRefreshToken(@RequestBody RefreshTokenDTO refreshTokenDTO, @RequestHeader String authorization) {
+        try {
+            String email = tokenService.validateToken(refreshTokenDTO.refreshToken());
 
-        User user = userService.findByEmail(email);
-        return ResponseEntity.ok(buildLoginResponse(user));
+            User user = userService.findByEmail(email);
+            return ResponseEntity.ok(buildLoginResponse(user));
+        } catch (RuntimeException e) {
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("{\"error\": \"Unauthorized\", \"message\": \"" + e.getMessage() + "\"}");
+        }
     }
 
     @PostMapping(API_PATH + "/user/register")

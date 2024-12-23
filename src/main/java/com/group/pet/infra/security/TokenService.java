@@ -2,9 +2,8 @@ package com.group.pet.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.exceptions.*;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.group.pet.domain.User;
 import com.group.pet.infra.security.expection.TokenException;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +26,27 @@ public class TokenService {
     public String generateRefreshToken(User user) {
         Instant expirationDate = Instant.now().plus(10, ChronoUnit.DAYS);
         return generateToken(user, expirationDate);
+    }
+
+    public void isTokenValid(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            DecodedJWT decodedJWT = JWT.decode(token);
+
+            algorithm.verify(decodedJWT);
+
+            String issuer = decodedJWT.getIssuer();
+            if (!"auth-api".equals(issuer)) {
+                throw new TokenException("Token com emissor inválido.");
+            }
+
+        } catch (JWTDecodeException e) {
+            throw new TokenException("Token malformado.");
+        } catch (SignatureVerificationException e) {
+            throw new TokenException("Assinatura do token inválida.");
+        } catch (RuntimeException e) {
+            throw new TokenException("Token inválido: " + e.getMessage());
+        }
     }
 
     private String generateToken(User user, Instant expirationDate) {
