@@ -21,7 +21,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @GetMapping(value = "/client")
+    @GetMapping(value = "/clients")
     public ResponseEntity<List<ClientDTO>> findAll() {
         final List<ClientDTO> clients = clientService.findAll();
         return ResponseEntity.ok()
