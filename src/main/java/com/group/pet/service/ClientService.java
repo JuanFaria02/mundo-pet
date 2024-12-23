@@ -31,6 +31,7 @@ public class ClientService {
     public List<ClientDTO> findAll() {
         return clientRepository.findAll()
                 .stream()
+                .filter(Client::isActive)
                 .map(ClientDTO::new)
                 .toList();
     }
