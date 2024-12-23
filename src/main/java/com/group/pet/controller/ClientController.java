@@ -41,8 +41,8 @@ public class ClientController {
     }
 
     @PutMapping("/client/{id}")
-    public ResponseEntity<ClientDTO> update(@RequestBody ClientDTO obj) {
-        clientService.update(obj);
+    public ResponseEntity<ClientDTO> update(@RequestBody ClientDTO obj, @PathVariable Long id) {
+        clientService.update(obj, id);
         return ResponseEntity.noContent().build();
     }
 

@@ -95,7 +95,7 @@ public class UserService {
                 obj.setPassword(encryptedPassword);
             }
 
-            final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(obj.getId()));
+            final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(id));
             user.copyDto(obj);
             return new UserDTO(userRepository.save(user));
         } catch (RuntimeException e) {

@@ -2,6 +2,7 @@ package com.group.pet.service;
 
 import com.group.pet.domain.Client;
 import com.group.pet.domain.Pet;
+import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.ClientDTO;
 import com.group.pet.domain.dtos.PetDTO;
 import com.group.pet.repository.ClientRepository;
@@ -20,9 +21,21 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
+    public Client findByDocumentNumber(String documentNumber) {
+        try {
+            return clientRepository.findByDocumentNumber(documentNumber);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("User with email " + documentNumber + " not found");
+        }
+    }
+
     public void insert(ClientDTO client) {
-        if (client.getId() != null) {
-            throw new DatabaseException("Esse usuário já está cadastrado");
+        if (findByDocumentNumber(client.getDocumentNumber()) != null) {
+            Client clientInactive = findByDocumentNumber(client.getDocumentNumber());
+            clientInactive.changeActive();
+            if (!clientInactive.isActive()) {
+                throw new DatabaseException("Esse usuário já está cadastrado");
+            }
         }
 
         clientRepository.save(new Client(client.getId(), client.getName(), client.getPhone(), client.getDocumentNumber()));
@@ -59,15 +72,11 @@ public class ClientService {
         }
     }
 
-    public void update(ClientDTO obj) {
-        if (obj.getId() == null) {
-            throw new DatabaseException("id is required");
-        }
-
+    public void update(ClientDTO obj, Long id) {
         try {
-            final Optional<Client> objClient = clientRepository.findById(obj.getId());
+            final Optional<Client> objClient = clientRepository.findById(id);
 
-            final Client client = objClient.orElseThrow(() -> new ResourceNotFoundException(obj.getId()));
+            final Client client = objClient.orElseThrow(() -> new ResourceNotFoundException(id));
             updatePets(client.getPets(), obj.getPets(), client);
             client.copyDto(obj);
             clientRepository.save(client);
