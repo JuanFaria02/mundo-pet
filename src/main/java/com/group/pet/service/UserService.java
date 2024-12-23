@@ -8,6 +8,7 @@ import com.group.pet.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,11 +27,28 @@ public class UserService {
         }
     }
 
-    public User insert(User user) {
+    public User findByDocumentNumber(String documentNumber) {
+        try {
+            return userRepository.findByDocumentNumber(documentNumber);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("User with email " + documentNumber + " not found");
+        }
+    }
+
+    public void insert(User user) {
         if (user.getId() != null) {
             throw new DatabaseException("Esse usuário já está cadastrado");
         }
-        return userRepository.save(user);
+
+        if ((findByEmail(user.getEmail()) != null || findByDocumentNumber(user.getDocumentNumber()) != null)) {
+            user.changeActive();
+        }
+
+        if (!user.isAtivo()) {
+            throw new DatabaseException("Esse usuário já está cadastrado");
+        }
+
+        userRepository.save(user);
     }
 
     public List<UserDTO> findAll() {
@@ -71,6 +89,11 @@ public class UserService {
     public UserDTO update(UserDTO obj, Long id) {
         try {
             final Optional<User> objUser = userRepository.findById(id);
+
+            if (obj.getPassword() != null) {
+                String encryptedPassword = new BCryptPasswordEncoder().encode(obj.getPassword());
+                obj.setPassword(encryptedPassword);
+            }
 
             final User user = objUser.orElseThrow(() -> new ResourceNotFoundException(obj.getId()));
             user.copyDto(obj);

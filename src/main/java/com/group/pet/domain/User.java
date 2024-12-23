@@ -104,6 +104,7 @@ public class User implements UserDetails, Serializable {
         this.nome = userDto.getName();
         this.telefone = userDto.getPhone();
         this.documentNumber = userDto.getDocumentNumber();
+        this.senha = userDto.getPassword();
     }
 
     public Long getId() {

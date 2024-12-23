@@ -10,6 +10,7 @@ public class UserDTO {
     private String phone;
     private UserType type;
     private String documentNumber;
+    private String password;
 
     public UserDTO(User user) {
         this.id = user.getId();
@@ -45,5 +46,13 @@ public class UserDTO {
 
     public String getDocumentNumber() {
         return documentNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
