@@ -35,17 +35,34 @@ public class UserService {
         }
     }
 
+    public User findUserPresentByDocumentNumberOrEmail(String documentNumber, String email) {
+        if (findByEmail(email) != null) {
+            return findByEmail(email);
+        }
+
+        if (findByDocumentNumber(documentNumber) != null) {
+            return findByDocumentNumber(documentNumber);
+        }
+
+        return null;
+    }
+
     public void insert(User user) {
         if (user.getId() != null) {
             throw new DatabaseException("Esse usuário já está cadastrado");
         }
 
-        if ((findByEmail(user.getEmail()) != null || findByDocumentNumber(user.getDocumentNumber()) != null)) {
-            user.changeActive();
-        }
+        User userInactive = findUserPresentByDocumentNumberOrEmail(user.getDocumentNumber(), user.getEmail());
 
-        if (!user.isAtivo()) {
-            throw new DatabaseException("Esse usuário já está cadastrado");
+        if (userInactive != null) {
+            user.changeActive();
+
+            if (!user.isAtivo()) {
+                throw new DatabaseException("Esse usuário já está cadastrado");
+            }
+
+            userRepository.save(userInactive);
+            return;
         }
 
         userRepository.save(user);

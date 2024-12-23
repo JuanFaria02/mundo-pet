@@ -36,9 +36,15 @@ public class ClientService {
         if (findByDocumentNumber(client.getDocumentNumber()) != null) {
             Client clientInactive = findByDocumentNumber(client.getDocumentNumber());
             clientInactive.changeActive();
+
             if (!clientInactive.isActive()) {
                 throw new DatabaseException("Esse usuário já está cadastrado");
             }
+
+            clientRepository.save(clientInactive);
+            updatePets(clientInactive.getPets(), client.getPets(), clientInactive);
+            clientRepository.save(clientInactive);
+            return;
         }
         final Client newClient = new Client(client.getId(), client.getName(), client.getPhone(), client.getDocumentNumber());
 
@@ -118,7 +124,7 @@ public class ClientService {
         petsToUpdate.forEach(petDTO -> pets.stream()
                 .filter(pet -> pet.getMicrochip().equals(petDTO.microchip()))
                 .findFirst()
-                .ifPresent(petWithSameId -> petWithSameId.copyDto(petDTO)));
+                .ifPresent(petWithSameId -> petRepository.findByMicrochip(petDTO.microchip()).copyDto(petDTO)));
 
         petsToSave.forEach(petDTO -> {
             final Pet pet = new Pet(null, petDTO.name(), petDTO.microchip(), petDTO.type());

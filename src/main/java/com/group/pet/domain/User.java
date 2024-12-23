@@ -131,6 +131,10 @@ public class User implements UserDetails, Serializable {
         return tipo;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public boolean isAtivo() {
         return ativo;
     }

@@ -46,7 +46,6 @@ public class Pet {
     }
 
     public void copyDto(PetDTO petDTO) {
-        this.id = petDTO.id();
         this.name = petDTO.name();
         this.microchip = petDTO.microchip();
         this.type = petDTO.type();
