@@ -6,6 +6,7 @@ import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.ClientDTO;
 import com.group.pet.domain.dtos.PetDTO;
 import com.group.pet.repository.ClientRepository;
+import com.group.pet.repository.PetRepository;
 import com.group.pet.service.exceptions.DatabaseException;
 import com.group.pet.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import java.util.Optional;
 public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private PetRepository petRepository;
 
     public Client findByDocumentNumber(String documentNumber) {
         try {
@@ -37,8 +40,20 @@ public class ClientService {
                 throw new DatabaseException("Esse usuário já está cadastrado");
             }
         }
+        final Client newClient = new Client(client.getId(), client.getName(), client.getPhone(), client.getDocumentNumber());
 
-        clientRepository.save(new Client(client.getId(), client.getName(), client.getPhone(), client.getDocumentNumber()));
+        clientRepository.save(newClient);
+
+        client.getPets().forEach(petDTO -> {
+            final Pet pet = new Pet(null, petDTO.name(), petDTO.microchip(), petDTO.type());
+            pet.setClient(newClient);
+            if (petRepository.findByMicrochip(pet.getMicrochip()) != null) {
+                throw new DatabaseException("Microchip já está cadastrado");
+            }
+            newClient.getPets().add(pet);
+        });
+
+        clientRepository.save(newClient);
     }
 
     public List<ClientDTO> findAll() {

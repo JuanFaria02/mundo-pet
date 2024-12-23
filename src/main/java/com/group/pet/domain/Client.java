@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class Client {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<Pet> pets;
+    private List<Pet> pets = new ArrayList<>();
 
     public Client() {
     }
