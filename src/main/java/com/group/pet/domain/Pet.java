@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "pet")
@@ -34,6 +36,10 @@ public class Pet {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "client_fk_pet"))
     private Client client;
+
+    @OneToMany(mappedBy = "pet")
+    @JsonIgnore
+    private List<Pet> scheduling = new ArrayList<>();
 
     public Pet() {
     }

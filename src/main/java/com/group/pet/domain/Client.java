@@ -1,5 +1,6 @@
 package com.group.pet.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.group.pet.domain.dtos.ClientDTO;
@@ -36,6 +37,11 @@ public class Client {
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Pet> pets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "client")
+    @JsonIgnore
+    private List<Pet> scheduling = new ArrayList<>();
+
 
     public Client() {
     }

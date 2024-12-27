@@ -1,5 +1,6 @@
 package com.group.pet.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group.pet.domain.dtos.UserDTO;
 import com.group.pet.domain.enums.UserType;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,6 +47,10 @@ public class User implements UserDetails, Serializable {
 
     @Column(name = "document_number", unique = true)
     private String documentNumber;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Pet> scheduling = new ArrayList<>();
 
 
     @Override
