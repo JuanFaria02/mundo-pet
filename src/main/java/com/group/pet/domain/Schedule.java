@@ -3,7 +3,9 @@ package com.group.pet.domain;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "schedule")
@@ -22,7 +24,14 @@ public class Schedule {
 
     @Column(name = "date_scheduling")
     @Timestamp
-    private LocalDateTime dateShceduling;
+    private LocalDate dateShceduling;
+
+    @Column(name = "time_scheduling")
+    @Timestamp
+    private LocalTime timeShceduling;
+
+    @Column(name = "period_scheduling")
+    private String period;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_fk_shcedule"))
@@ -40,10 +49,11 @@ public class Schedule {
     public Schedule() {
     }
 
-    public Schedule(Client client, Pet pet, LocalDateTime dateShceduling, User user) {
+    public Schedule(Client client, Pet pet, LocalDate dateShceduling, LocalTime timeShceduling, User user) {
         this.client = client;
         this.pet = pet;
         this.dateShceduling = dateShceduling;
+        this.timeShceduling = timeShceduling;
         this.user = user;
     }
 
@@ -59,8 +69,12 @@ public class Schedule {
         return client;
     }
 
-    public LocalDateTime getDateShceduling() {
+    public LocalDate getDateShceduling() {
         return dateShceduling;
+    }
+
+    public LocalTime getTimeShceduling() {
+        return timeShceduling;
     }
 
     public User getUser() {
@@ -73,6 +87,10 @@ public class Schedule {
 
     public boolean isActive() {
         return active;
+    }
+
+    public String getPeriod() {
+        return period;
     }
 
     public void changeActive() {

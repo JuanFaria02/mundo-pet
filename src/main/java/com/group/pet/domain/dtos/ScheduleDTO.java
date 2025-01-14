@@ -1,4 +1,7 @@
 package com.group.pet.domain.dtos;
 
-public record ScheduleDTO(){
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public record ScheduleDTO(Long id, String clientName, String petName, String userName, LocalDate date, LocalTime time, String service, String period) {
 }

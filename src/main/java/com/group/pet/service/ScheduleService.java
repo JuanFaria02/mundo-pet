@@ -21,7 +21,16 @@ public class ScheduleService {
        return scheduleRepository.findAll()
                .stream()
                .filter(Schedule::isActive)
-               .map(ScheduleDTO::new)
+               .map(schedule -> new ScheduleDTO(
+                       schedule.getId(),
+                       schedule.getClient().getName(),
+                       schedule.getPet().getName(),
+                       schedule.getUser().getNome(),
+                       schedule.getDateShceduling(),
+                       schedule.getTimeShceduling(),
+                       schedule.getService(),
+                       schedule.getPeriod()
+                       ))
                .toList();
     }
 }
