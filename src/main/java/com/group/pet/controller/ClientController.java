@@ -42,8 +42,8 @@ public class ClientController {
 
     @PutMapping("/client/{id}")
     public ResponseEntity<ClientDTO> update(@RequestBody ClientDTO obj, @PathVariable Long id) {
-        clientService.update(obj, id);
-        return ResponseEntity.noContent().build();
+        final ClientDTO client = clientService.update(obj, id);
+        return ResponseEntity.ok().body(client);
     }
 
     @PostMapping("/client/create")
