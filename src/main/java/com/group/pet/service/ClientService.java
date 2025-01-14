@@ -93,14 +93,15 @@ public class ClientService {
         }
     }
 
-    public void update(ClientDTO obj, Long id) {
+    public ClientDTO update(ClientDTO obj, Long id) {
         try {
             final Optional<Client> objClient = clientRepository.findById(id);
 
             final Client client = objClient.orElseThrow(() -> new ResourceNotFoundException(id));
             updatePets(client.getPets(), obj.getPets(), client);
             client.copyDto(obj);
-            clientRepository.save(client);
+            Client updatedClient = clientRepository.save(client);
+            return new ClientDTO(updatedClient);
         } catch (RuntimeException e) {
             throw new DatabaseException(e.getMessage());
         }
