@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    List<Schedule> findByDateShcedulingAAndPeriod(LocalDate date, String period);
+    List<Schedule> findByDateShcedulingAndPeriod(LocalDate date, String period);
 }

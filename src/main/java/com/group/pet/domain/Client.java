@@ -40,7 +40,7 @@ public class Client {
 
     @OneToMany(mappedBy = "client")
     @JsonIgnore
-    private List<Pet> scheduling = new ArrayList<>();
+    private List<Schedule> scheduling = new ArrayList<>();
 
 
     public Client() {

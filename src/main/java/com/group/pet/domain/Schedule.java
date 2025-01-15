@@ -19,7 +19,7 @@ public class Schedule {
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id", foreignKey = @ForeignKey(name = "pet_fk_shcedule"))
+    @JoinColumn(name = "pet_id", foreignKey = @ForeignKey(name = "pet_fk_schedule"))
     private Pet pet;
 
     @Column(name = "date_scheduling")

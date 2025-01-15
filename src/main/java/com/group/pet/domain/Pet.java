@@ -1,6 +1,5 @@
 package com.group.pet.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group.pet.domain.dtos.PetDTO;
 import jakarta.persistence.*;
@@ -37,9 +36,9 @@ public class Pet {
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "client_fk_pet"))
     private Client client;
 
-    @OneToMany(mappedBy = "pet")
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Pet> scheduling = new ArrayList<>();
+    private List<Schedule> scheduling = new ArrayList<>();
 
     public Pet() {
     }

@@ -50,7 +50,7 @@ public class User implements UserDetails, Serializable {
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private List<Pet> scheduling = new ArrayList<>();
+    private List<Schedule> scheduling = new ArrayList<>();
 
 
     @Override

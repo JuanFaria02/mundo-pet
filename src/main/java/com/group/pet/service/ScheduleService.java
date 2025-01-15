@@ -18,6 +18,7 @@ public class ScheduleService {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
     private UserService userService;
 
     public void insert(SchedulePayload obj) {
@@ -28,7 +29,7 @@ public class ScheduleService {
     public List<ScheduleDTO> findByDateAndPeriod(String date, String period) {
         LocalDate localDate = LocalDate.parse(date);
 
-        final List<Schedule> byDateAndPeriod = scheduleRepository.findByDateShcedulingAAndPeriod(localDate, period);
+        final List<Schedule> byDateAndPeriod = scheduleRepository.findByDateShcedulingAndPeriod(localDate, period);
         return byDateAndPeriod
                 .stream()
                 .filter(Schedule::isActive)
@@ -37,8 +38,8 @@ public class ScheduleService {
                         schedule.getClient().getName(),
                         schedule.getPet().getName(),
                         schedule.getUser().getNome(),
-                        schedule.getDateShceduling(),
-                        schedule.getTimeShceduling(),
+                        schedule.getDateShceduling().toString(),
+                        schedule.getTimeShceduling().toString(),
                         schedule.getService(),
                         schedule.getPeriod()
                 ))
