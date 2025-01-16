@@ -22,7 +22,7 @@ public class ScheduleController {
     private ScheduleService scheduleService;
 
     @GetMapping("/scheduling")
-    public ResponseEntity<Map<LocalDate, Map<String, List<ScheduleDTO>>>> findAll(@RequestParam(value = "date", required = false) String date) {
+    public ResponseEntity<Map<LocalDate, Map<String, List<ScheduleDTO>>>> findAll(@RequestParam(value = "date") String date) {
         final List<ScheduleDTO> morningPeriod = scheduleService.findByDateAndPeriod(date, "manha");
         final List<ScheduleDTO> afternoomPeriod = scheduleService.findByDateAndPeriod(date, "tarde");
         final List<ScheduleDTO> nightPeriod = scheduleService.findByDateAndPeriod(date, "noite");
@@ -35,5 +35,10 @@ public class ScheduleController {
 
         Map<LocalDate, Map<String, List<ScheduleDTO>>> body = Map.of(LocalDate.parse(date), dateByPeriod);
         return ResponseEntity.ok().body(body);
+    }
+
+    @GetMapping("/scheduling/employees")
+    public ResponseEntity<Object> employeesAvailable(@RequestParam(value = "date") String date) {
+        return ResponseEntity.ok().body(scheduleService.employeesAvailable(date));
     }
 }
