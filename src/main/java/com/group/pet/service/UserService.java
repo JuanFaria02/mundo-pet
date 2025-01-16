@@ -107,7 +107,7 @@ public class UserService {
         try {
             final Optional<User> objUser = userRepository.findById(id);
 
-            if (obj.getPassword() != null) {
+            if (obj.getPassword() != null && !obj.getPassword().isBlank()) {
                 String encryptedPassword = new BCryptPasswordEncoder().encode(obj.getPassword());
                 obj.setPassword(encryptedPassword);
             }
