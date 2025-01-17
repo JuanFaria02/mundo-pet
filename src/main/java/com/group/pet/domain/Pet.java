@@ -86,4 +86,8 @@ public class Pet {
     public void changeActive() {
         active = !active;
     }
+
+    public void inactivate() {
+        active = false;
+    }
 }

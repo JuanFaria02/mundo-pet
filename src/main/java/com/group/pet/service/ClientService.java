@@ -9,6 +9,7 @@ import com.group.pet.repository.ClientRepository;
 import com.group.pet.repository.PetRepository;
 import com.group.pet.service.exceptions.DatabaseException;
 import com.group.pet.service.exceptions.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -32,6 +33,7 @@ public class ClientService {
         }
     }
 
+    @Transactional
     public void insert(ClientDTO client) {
         if (findByDocumentNumber(client.getDocumentNumber()) != null) {
             Client clientInactive = findByDocumentNumber(client.getDocumentNumber());
@@ -83,6 +85,7 @@ public class ClientService {
 
             final Client client = objClient.orElseThrow(() -> new ResourceNotFoundException(id));
             client.changeActive();
+            client.getPets().forEach(Pet::inactivate);
             clientRepository.save(client);
         }
         catch (EmptyResultDataAccessException e) {
@@ -133,6 +136,6 @@ public class ClientService {
             pets.add(pet);
         });
 
-        petsToInactivate.forEach(Pet::changeActive);
+        petsToInactivate.forEach(Pet::inactivate);
     }
 }
