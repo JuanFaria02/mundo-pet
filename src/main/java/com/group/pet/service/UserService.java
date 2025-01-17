@@ -51,7 +51,7 @@ public class UserService {
     public List<User> findAllVeterinarian() {
         return userRepository.findAll()
                 .stream()
-                .filter(user -> user.getTipo().equals(UserType.VETERINARIO))
+                .filter(user -> user.getTipo().equals(UserType.VETERINARIO) && user.isAtivo())
                 .toList();
     }
 

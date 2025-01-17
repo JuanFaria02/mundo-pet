@@ -1,11 +1,17 @@
 package com.group.pet.service;
 
+import com.group.pet.domain.Client;
+import com.group.pet.domain.Pet;
 import com.group.pet.domain.Schedule;
 import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.ScheduleDTO;
 import com.group.pet.domain.dtos.SchedulePayload;
 import com.group.pet.repository.ScheduleRepository;
+import com.group.pet.service.exceptions.DatabaseException;
+import com.group.pet.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,6 +19,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -34,17 +41,64 @@ public class ScheduleService {
             .toList();
 
 
-    public void insert(SchedulePayload obj) {
+    public ScheduleDTO insert(SchedulePayload obj) {
+        final Client client = clientService.findByDocumentNumber(obj.tutorCpf());
+        final User user = userService.findByDocumentNumber(obj.veterinarianDocumentNumber());
+        final Pet pet = client.getPets()
+                .stream()
+                .filter(p -> p.getName().equals(obj.pet()))
+                .findFirst()
+                .orElse(null);
 
+        final Schedule schedule = new Schedule(client, pet, obj.date(), obj.time(), user, getPeriod(obj.time()), obj.service());
+        final Schedule scheduleSave = scheduleRepository.save(schedule);
+
+        return new ScheduleDTO(scheduleSave.getId(), scheduleSave.getClient().getName(),
+                scheduleSave.getPet().getName(),
+                scheduleSave.getUser().getUsername(),
+                scheduleSave.getDateShceduling().toString(), scheduleSave.getTimeShceduling().toString(),
+                scheduleSave.getService(), scheduleSave.getPeriod());
     }
+
+    public String getPeriod(LocalTime time) {
+        if (time.isAfter(LocalTime.of(17, 0))) {
+            return "noite";
+        }
+        if (time.isAfter(LocalTime.of(12, 0))) {
+            return "tarde";
+        }
+        if (time.isAfter(LocalTime.of(8, 0))) {
+            return "manha";
+        }
+
+        return null;
+    }
+
+    public void inactivate(Long id) {
+        try {
+            final Optional<Schedule> objSchedule = scheduleRepository.findById(id);
+
+            final Schedule schedule = objSchedule.orElseThrow(() -> new ResourceNotFoundException(id));
+
+            schedule.changeActive();
+            scheduleRepository.save(schedule);
+        }
+        catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
 
     public Map<String, Object> employeesAvailable(String date) {
         final List<Object> listMapVeterinarian = new ArrayList<>();
-        final List<User> allVeterinarian = userService.findAllVeterinarian();
-        final List<Schedule> allSchedules = scheduleRepository.findByDateShceduling(LocalDate.parse(date));
+        final List<User> allVeterinarianActive = userService.findAllVeterinarian();
+        final List<Schedule> allSchedulesActive = scheduleRepository.findByDateShcedulingAndActive(LocalDate.parse(date));
 
-        for (final User user : allVeterinarian) {
-            List<LocalTime> busyHours = allSchedules.stream()
+        for (final User user : allVeterinarianActive) {
+            List<LocalTime> busyHours = allSchedulesActive.stream()
                     .filter(schedule -> schedule.isActive() && schedule.getUser().equals(user))
                     .map(Schedule::getTimeShceduling)
                     .toList();

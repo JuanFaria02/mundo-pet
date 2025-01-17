@@ -49,12 +49,14 @@ public class Schedule {
     public Schedule() {
     }
 
-    public Schedule(Client client, Pet pet, LocalDate dateShceduling, LocalTime timeShceduling, User user) {
+    public Schedule(Client client, Pet pet, LocalDate dateShceduling, LocalTime timeShceduling, User user, String period, String service) {
         this.client = client;
         this.pet = pet;
         this.dateShceduling = dateShceduling;
         this.timeShceduling = timeShceduling;
         this.user = user;
+        this.period = period;
+        this.service = service;
     }
 
     public long getId() {
