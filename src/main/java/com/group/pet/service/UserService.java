@@ -2,6 +2,7 @@ package com.group.pet.service;
 
 import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.UserDTO;
+import com.group.pet.domain.enums.UserType;
 import com.group.pet.repository.UserRepository;
 import com.group.pet.service.exceptions.DatabaseException;
 import com.group.pet.service.exceptions.ResourceNotFoundException;
@@ -45,6 +46,13 @@ public class UserService {
         }
 
         return null;
+    }
+
+    public List<User> findAllVeterinarian() {
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> user.getTipo().equals(UserType.VETERINARIO) && user.isAtivo())
+                .toList();
     }
 
     public void insert(User user) {
