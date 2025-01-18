@@ -95,7 +95,7 @@ public class ScheduleService {
     public Map<String, Object> employeesAvailable(String date) {
         final List<Object> listMapVeterinarian = new ArrayList<>();
         final List<User> allVeterinarianActive = userService.findAllVeterinarian();
-        final List<Schedule> allSchedulesActive = scheduleRepository.findByDateShcedulingAndActive(LocalDate.parse(date));
+        final List<Schedule> allSchedulesActive = scheduleRepository.findByDateShceduling(LocalDate.parse(date));
 
         for (final User user : allVeterinarianActive) {
             List<LocalTime> busyHours = allSchedulesActive.stream()
