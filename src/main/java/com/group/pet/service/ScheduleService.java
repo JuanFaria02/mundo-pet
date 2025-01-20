@@ -44,20 +44,31 @@ public class ScheduleService {
     public ScheduleDTO insert(SchedulePayload obj) {
         final Client client = clientService.findByDocumentNumber(obj.tutorCpf());
         final User user = userService.findByDocumentNumber(obj.veterinarianDocumentNumber());
-        final Pet pet = client.getPets()
-                .stream()
-                .filter(p -> p.getName().equals(obj.pet()))
-                .findFirst()
-                .orElse(null);
 
-        final Schedule schedule = new Schedule(client, pet, obj.date(), obj.time(), user, getPeriod(obj.time()), obj.service());
-        final Schedule scheduleSave = scheduleRepository.save(schedule);
+        if (client == null || user == null) {
+            throw new ResourceNotFoundException("Client not found");
+        }
 
-        return new ScheduleDTO(scheduleSave.getId(), scheduleSave.getClient().getName(),
-                scheduleSave.getPet().getName(),
-                scheduleSave.getUser().getUsername(),
-                scheduleSave.getDateShceduling().toString(), scheduleSave.getTimeShceduling().toString(),
-                scheduleSave.getService(), scheduleSave.getPeriod());
+        try {
+            final Pet pet = client.getPets()
+                    .stream()
+                    .filter(p -> p.getName().equals(obj.pet()))
+                    .findFirst()
+                    .orElse(null);
+
+            final Schedule schedule = new Schedule(client, pet, obj.date(), obj.time(), user, getPeriod(obj.time()), obj.service());
+            final Schedule scheduleSave = scheduleRepository.save(schedule);
+
+            return new ScheduleDTO(scheduleSave.getId(), scheduleSave.getClient().getName(),
+                    scheduleSave.getPet().getName(),
+                    scheduleSave.getUser().getUsername(),
+                    scheduleSave.getDateShceduling().toString(), scheduleSave.getTimeShceduling().toString(),
+                    scheduleSave.getService(), scheduleSave.getPeriod());
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        }
     }
 
     public String getPeriod(LocalTime time) {
