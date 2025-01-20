@@ -23,19 +23,18 @@ public class ScheduleController {
     private ScheduleService scheduleService;
 
     @GetMapping("/scheduling")
-    public ResponseEntity<Map<LocalDate, Map<String, List<ScheduleDTO>>>> findAll(@RequestParam(value = "date") String date) {
-        final List<ScheduleDTO> morningPeriod = scheduleService.findByDateAndPeriod(date, "manha");
-        final List<ScheduleDTO> afternoomPeriod = scheduleService.findByDateAndPeriod(date, "tarde");
-        final List<ScheduleDTO> nightPeriod = scheduleService.findByDateAndPeriod(date, "noite");
+    public ResponseEntity<Map<String, List<ScheduleDTO>>> findAll(@RequestParam(value = "date") String date) {
+        final List<ScheduleDTO> morningPeriod = scheduleService.findByDateAndPeriod(date, "morning");
+        final List<ScheduleDTO> afternoomPeriod = scheduleService.findByDateAndPeriod(date, "afternoom");
+        final List<ScheduleDTO> nightPeriod = scheduleService.findByDateAndPeriod(date, "night");
 
         final Map<String, List<ScheduleDTO>> dateByPeriod = Map.of(
-                "Manhã", morningPeriod,
-                "Tarde", afternoomPeriod,
-                "Noite", nightPeriod
+                "morning", morningPeriod,
+                "afternoom", afternoomPeriod,
+                "night", nightPeriod
         );
 
-        Map<LocalDate, Map<String, List<ScheduleDTO>>> body = Map.of(LocalDate.parse(date), dateByPeriod);
-        return ResponseEntity.ok().body(body);
+        return ResponseEntity.ok().body(dateByPeriod);
     }
 
     @GetMapping("/scheduling/employees")

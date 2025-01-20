@@ -53,6 +53,12 @@ public class ScheduleService {
             throw new ResourceNotFoundException("Pet not found");
         }
 
+        final Schedule scheduleAtSameTime = scheduleRepository.findByDateShcedulingAndTimeScheduling(obj.date(), obj.time(), user);
+
+        if (scheduleAtSameTime != null) {
+            throw new DatabaseException("Employee busy");
+        }
+
         try {
             final Pet pet = client.getPets()
                     .stream()
@@ -77,13 +83,13 @@ public class ScheduleService {
 
     public String getPeriod(LocalTime time) {
         if (time.isAfter(LocalTime.of(17, 0))) {
-            return "noite";
+            return "night";
         }
         if (time.isAfter(LocalTime.of(12, 0))) {
-            return "tarde";
+            return "afternoom";
         }
         if (time.isAfter(LocalTime.of(8, 0))) {
-            return "manha";
+            return "morning";
         }
 
         return null;
