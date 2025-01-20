@@ -156,6 +156,10 @@ public class User implements UserDetails, Serializable {
         return documentNumber;
     }
 
+    public List<Schedule> getScheduling() {
+        return scheduling;
+    }
+
     public void changeActive() {
         ativo = !ativo;
     }

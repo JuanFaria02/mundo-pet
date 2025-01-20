@@ -9,6 +9,7 @@ import com.group.pet.domain.dtos.SchedulePayload;
 import com.group.pet.repository.ScheduleRepository;
 import com.group.pet.service.exceptions.DatabaseException;
 import com.group.pet.service.exceptions.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -41,6 +42,7 @@ public class ScheduleService {
             .toList();
 
 
+    @Transactional
     public ScheduleDTO insert(SchedulePayload obj) {
         final Client client = clientService.findByDocumentNumber(obj.clientDocumentNumber());
         final User user = userService.findByDocumentNumber(obj.veterinarianDocumentNumber());
@@ -53,7 +55,7 @@ public class ScheduleService {
             throw new ResourceNotFoundException("Pet not found");
         }
 
-        final Schedule scheduleAtSameTime = scheduleRepository.findByDateShcedulingAndTimeScheduling(obj.date(), obj.time(), user);
+        final Schedule scheduleAtSameTime = scheduleRepository.findByDateShcedulingAndTimeScheduling(obj.date(), obj.time(), user, client);
 
         if (scheduleAtSameTime != null) {
             throw new DatabaseException("Employee busy");
@@ -99,13 +101,14 @@ public class ScheduleService {
         return null;
     }
 
+    @Transactional
     public void inactivate(Long id) {
         try {
             final Optional<Schedule> objSchedule = scheduleRepository.findById(id);
 
             final Schedule schedule = objSchedule.orElseThrow(() -> new ResourceNotFoundException(id));
 
-            schedule.changeActive();
+            schedule.inactivate();
             scheduleRepository.save(schedule);
         }
         catch (EmptyResultDataAccessException e) {

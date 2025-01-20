@@ -1,11 +1,13 @@
 package com.group.pet.service;
 
+import com.group.pet.domain.Schedule;
 import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.UserDTO;
 import com.group.pet.domain.enums.UserType;
 import com.group.pet.repository.UserRepository;
 import com.group.pet.service.exceptions.DatabaseException;
 import com.group.pet.service.exceptions.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -55,6 +57,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
     public void insert(User user) {
         if (user.getId() != null) {
             throw new DatabaseException("Esse usuário já está cadastrado");
@@ -91,6 +94,7 @@ public class UserService {
         return new UserDTO(user);
     }
 
+    @Transactional
     public void inactivate(Long id) {
         try {
             final Optional<User> objUser = userRepository.findById(id);
@@ -101,6 +105,10 @@ public class UserService {
                 throw new DataIntegrityViolationException("Não é possível deletar o admin");
             }
             user.changeActive();
+
+            if (user.getScheduling() != null && user.getScheduling().isEmpty()) {
+                user.getScheduling().forEach(Schedule::inactivate);
+            }
             userRepository.save(user);
         }
         catch (EmptyResultDataAccessException e) {
@@ -111,6 +119,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public UserDTO update(UserDTO obj, Long id) {
         try {
             final Optional<User> objUser = userRepository.findById(id);

@@ -91,4 +91,8 @@ public class Client {
     public void changeActive() {
         active = !active;
     }
+
+    public List<Schedule> getScheduling() {
+        return scheduling;
+    }
 }

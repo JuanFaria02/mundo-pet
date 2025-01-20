@@ -95,4 +95,8 @@ public class Pet {
     public void inactivate() {
         active = false;
     }
+
+    public List<Schedule> getScheduling() {
+        return scheduling;
+    }
 }

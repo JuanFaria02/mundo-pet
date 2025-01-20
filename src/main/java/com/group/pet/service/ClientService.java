@@ -2,6 +2,7 @@ package com.group.pet.service;
 
 import com.group.pet.domain.Client;
 import com.group.pet.domain.Pet;
+import com.group.pet.domain.Schedule;
 import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.ClientDTO;
 import com.group.pet.domain.dtos.PetDTO;
@@ -79,6 +80,7 @@ public class ClientService {
         return new ClientDTO(client);
     }
 
+    @Transactional
     public void inactivate(Long id) {
         try {
             final Optional<Client> objClient = clientRepository.findById(id);
@@ -86,6 +88,10 @@ public class ClientService {
             final Client client = objClient.orElseThrow(() -> new ResourceNotFoundException(id));
             client.changeActive();
             client.getPets().forEach(Pet::inactivate);
+            if (client.getScheduling() != null && client.getScheduling().isEmpty()) {
+                client.getScheduling().forEach(Schedule::inactivate);
+            }
+
             clientRepository.save(client);
         }
         catch (EmptyResultDataAccessException e) {
@@ -96,6 +102,7 @@ public class ClientService {
         }
     }
 
+    @Transactional
     public ClientDTO update(ClientDTO obj, Long id) {
         try {
             final Optional<Client> objClient = clientRepository.findById(id);

@@ -98,4 +98,8 @@ public class Schedule {
     public void changeActive() {
         active = !active;
     }
+
+    public void inactivate() {
+        active = false;
+    }
 }
