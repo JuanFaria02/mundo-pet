@@ -42,17 +42,21 @@ public class ScheduleService {
 
 
     public ScheduleDTO insert(SchedulePayload obj) {
-        final Client client = clientService.findByDocumentNumber(obj.tutorCpf());
+        final Client client = clientService.findByDocumentNumber(obj.clientDocumentNumber());
         final User user = userService.findByDocumentNumber(obj.veterinarianDocumentNumber());
 
         if (client == null || user == null) {
             throw new ResourceNotFoundException("Client not found");
         }
 
+        if (obj.pet() == null || obj.pet().isBlank()) {
+            throw new ResourceNotFoundException("Pet not found");
+        }
+
         try {
             final Pet pet = client.getPets()
                     .stream()
-                    .filter(p -> p.getName().equals(obj.pet()))
+                    .filter(p -> p.getName().equals(obj.pet().toLowerCase()))
                     .findFirst()
                     .orElse(null);
 
@@ -66,7 +70,7 @@ public class ScheduleService {
                     scheduleSave.getService(), scheduleSave.getPeriod());
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | ResourceNotFoundException e) {
             throw new ResourceNotFoundException(e.getMessage());
         }
     }

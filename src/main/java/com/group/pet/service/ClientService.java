@@ -131,7 +131,7 @@ public class ClientService {
                 .ifPresent(petWithSameId -> petRepository.findByMicrochip(petDTO.microchip()).copyDto(petDTO)));
 
         petsToSave.forEach(petDTO -> {
-            final Pet pet = new Pet(null, petDTO.name(), petDTO.microchip(), petDTO.type());
+            final Pet pet = new Pet(null, petDTO.name().toLowerCase(), petDTO.microchip(), petDTO.type());
             pet.setClient(client);
             pets.add(pet);
         });
