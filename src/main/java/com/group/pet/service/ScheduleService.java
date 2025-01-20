@@ -62,9 +62,13 @@ public class ScheduleService {
         try {
             final Pet pet = client.getPets()
                     .stream()
-                    .filter(p -> p.getName().equals(obj.pet().toLowerCase()))
+                    .filter(p -> p.getName().equalsIgnoreCase(obj.pet()))
                     .findFirst()
                     .orElse(null);
+
+            if (pet == null) {
+                throw new ResourceNotFoundException("Pet not found");
+            }
 
             final Schedule schedule = new Schedule(client, pet, obj.date(), obj.time(), user, getPeriod(obj.time()), obj.service());
             final Schedule scheduleSave = scheduleRepository.save(schedule);
@@ -86,7 +90,7 @@ public class ScheduleService {
             return "night";
         }
         if (time.isAfter(LocalTime.of(12, 0))) {
-            return "afternoom";
+            return "afternoon";
         }
         if (time.isAfter(LocalTime.of(8, 0))) {
             return "morning";
