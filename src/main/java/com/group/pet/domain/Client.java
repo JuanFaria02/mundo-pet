@@ -85,7 +85,9 @@ public class Client {
     }
 
     public List<Pet> getPets() {
-        return this.pets;
+        return this.pets.stream()
+                .filter(Pet::isActive)
+                .toList();
     }
 
     public void changeActive() {

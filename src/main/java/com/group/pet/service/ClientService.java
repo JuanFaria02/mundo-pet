@@ -131,6 +131,12 @@ public class ClientService {
                 .filter(pet -> newPets.stream().noneMatch(newPet -> newPet.microchip().equals(pet.getMicrochip())))
                 .toList();
 
+        if (!petsToInactivate.isEmpty()) {
+            petsToInactivate.stream()
+                    .filter(pet -> pet.getScheduling() != null && !pet.getScheduling().isEmpty())
+                    .forEach(pet -> pet.getScheduling().forEach(Schedule::inactivate));
+        }
+
         petsToUpdate.forEach(petDTO -> pets.stream()
                 .filter(pet -> pet.getMicrochip().equals(petDTO.microchip()))
                 .findFirst()
