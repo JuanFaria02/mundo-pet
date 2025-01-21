@@ -3,7 +3,6 @@ package com.group.pet.service;
 import com.group.pet.domain.Client;
 import com.group.pet.domain.Pet;
 import com.group.pet.domain.Schedule;
-import com.group.pet.domain.User;
 import com.group.pet.domain.dtos.ClientDTO;
 import com.group.pet.domain.dtos.PetDTO;
 import com.group.pet.repository.ClientRepository;

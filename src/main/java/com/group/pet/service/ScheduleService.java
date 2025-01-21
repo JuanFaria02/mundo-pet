@@ -88,9 +88,6 @@ public class ScheduleService {
     }
 
     public String getPeriod(LocalTime time) {
-        if (time.isAfter(LocalTime.of(17, 0))) {
-            return "night";
-        }
         if (time.isAfter(LocalTime.of(12, 0))) {
             return "afternoon";
         }

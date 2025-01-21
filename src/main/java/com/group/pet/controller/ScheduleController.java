@@ -26,12 +26,10 @@ public class ScheduleController {
     public ResponseEntity<Map<String, List<ScheduleDTO>>> findAll(@RequestParam(value = "date") String date) {
         final List<ScheduleDTO> morningPeriod = scheduleService.findByDateAndPeriod(date, "morning");
         final List<ScheduleDTO> afternoonPeriod = scheduleService.findByDateAndPeriod(date, "afternoon");
-        final List<ScheduleDTO> nightPeriod = scheduleService.findByDateAndPeriod(date, "night");
 
         final Map<String, List<ScheduleDTO>> dateByPeriod = Map.of(
                 "morning", morningPeriod,
-                "afternoon", afternoonPeriod,
-                "night", nightPeriod
+                "afternoon", afternoonPeriod
         );
 
         return ResponseEntity.ok().body(dateByPeriod);
