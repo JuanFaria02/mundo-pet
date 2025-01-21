@@ -43,9 +43,6 @@ public class Schedule {
     @Column(nullable = false)
     private boolean active = true;
 
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
     public Schedule() {
     }
 
